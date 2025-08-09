@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/ordermsa?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 1234
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    open-in-view: false
+
+jwt:
+  expiration: 1000
+  secret-key: YmV5b25kYWNjZXNzdG9rZW5zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2tlbnNlY3JldGtleWJleW9uZGFjY2Vzc3Rva2Vuc2VjcmV0a2V5
+  expiration-rt: 288000
+  secret-key-rt: YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5
