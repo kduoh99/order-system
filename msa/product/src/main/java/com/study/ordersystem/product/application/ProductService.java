@@ -1,8 +1,11 @@
 package com.study.ordersystem.product.application;
 
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.ordersystem.product.api.dto.request.ProductRegisterReqDto;
 import com.study.ordersystem.product.api.dto.request.ProductUpdateStockReqDto;
 import com.study.ordersystem.product.api.dto.response.ProductResDto;
@@ -38,5 +41,17 @@ public class ProductService {
 
 		product.updateStockQuantity(productUpdateStockReqDto.productQuantity());
 		return product.getId();
+	}
+
+	@KafkaListener(topics = "update-stock-topic", containerFactory = "kafkaListener")
+	public void stockConsumer(String message) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		ProductUpdateStockReqDto dto = null;
+		try {
+			dto = objectMapper.readValue(message, ProductUpdateStockReqDto.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+		this.updateStockQuantity(dto);
 	}
 }

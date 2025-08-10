@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -26,6 +27,7 @@ public class OrderingService {
 	private final OrderingRepository orderingRepository;
 	private final RestTemplate restTemplate;
 	private final ProductFeign productFeign;
+	private final KafkaTemplate<String, Object> kafkaTemplate;
 
 	public Long orderCreate(OrderCreateReqDto orderCreateReqDto, String userId) {
 
@@ -75,12 +77,17 @@ public class OrderingService {
 		if (productDto.stockQuantity() < quantity) {
 			throw new IllegalArgumentException("재고가 부족합니다.");
 		} else {
-			productFeign.updateProductStock(
-				ProductUpdateStockDto.builder()
-					.productId(orderCreateReqDto.productId())
-					.productQuantity(orderCreateReqDto.productCount())
-					.build()
-			);
+			// productFeign.updateProductStock(
+			// 	ProductUpdateStockDto.builder()
+			// 		.productId(orderCreateReqDto.productId())
+			// 		.productQuantity(orderCreateReqDto.productCount())
+			// 		.build()
+			// );
+
+			kafkaTemplate.send("update-stock-topic", ProductUpdateStockDto.builder()
+				.productId(orderCreateReqDto.productId())
+				.productQuantity(orderCreateReqDto.productCount())
+				.build());
 		}
 
 		Ordering ordering = orderingRepository.save(Ordering.builder()
