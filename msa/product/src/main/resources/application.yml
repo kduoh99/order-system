@@ -1,35 +1,6 @@
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-
-server:
-  port: 0
-
 spring:
   application:
     name: product-service
-
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/ordermsa?useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 1234
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-    open-in-view: false
-
-  kafka:
-    kafka-server: localhost:9092
-    consumer:
-      # group-id는 consumer 그룹을 식별하는 id. 동일한 group-id를 가진 consumer들은 메시지를 분담해서 consume
-      # 만약 여러 consumer가 다른 group-id를 가지고 한 topic을 리슨하면, 각기 메시지를 수신하여 메시지 전파 효과 발생
-      group-id: product-group
-      # Kafka 내에 들어와있는 메시지 중에서 첫 메시지부터 읽기 시작 (latest: 현시점 이후로 들어오는 메시지만 read)
-      auto-offset-reset: earliest
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+    fail-fast: true

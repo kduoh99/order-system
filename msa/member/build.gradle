@@ -41,6 +41,9 @@ dependencies {
 
 	//	Eureka Client
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+	// Config Server 사용을 위한 Client
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 }
 
 dependencyManagement {

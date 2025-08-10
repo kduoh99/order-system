@@ -38,6 +38,9 @@ dependencies {
 
 	// Kafka
 	implementation 'org.springframework.kafka:spring-kafka'
+
+	// Config Server 사용을 위한 Client
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 }
 
 dependencyManagement {
