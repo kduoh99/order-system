@@ -1,19 +1,14 @@
 package com.study.ordersystem.ordering.domain;
 
 import com.study.ordersystem.common.entity.BaseTimeEntity;
-import com.study.ordersystem.member.domain.Member;
-import com.study.ordersystem.product.domain.Product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,14 +23,11 @@ public class Ordering extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;
+	@Column(nullable = false)
+	private Long memberId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id")
-	private Product product;
-
+	@Column(nullable = false)
+	private Long productId;
 
 	@Column(nullable = false)
 	private Integer quantity;
@@ -44,9 +36,9 @@ public class Ordering extends BaseTimeEntity {
 	private OrderStatus orderStatus;
 
 	@Builder
-	private Ordering(Member member, Product product, Integer quantity, OrderStatus orderStatus) {
-		this.member = member;
-		this.product = product;
+	private Ordering(Long memberId, Long productId, Integer quantity, OrderStatus orderStatus) {
+		this.memberId = memberId;
+		this.productId = productId;
 		this.quantity = quantity;
 		this.orderStatus = orderStatus;
 	}
