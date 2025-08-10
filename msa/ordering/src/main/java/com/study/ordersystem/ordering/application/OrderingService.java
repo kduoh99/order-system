@@ -17,6 +17,7 @@ import com.study.ordersystem.ordering.domain.OrderStatus;
 import com.study.ordersystem.ordering.domain.Ordering;
 import com.study.ordersystem.ordering.domain.repository.OrderingRepository;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -69,6 +70,9 @@ public class OrderingService {
 		return ordering.getId();
 	}
 
+	// CircuitBreaker는 해당 name을 가진 메서드에 한해서만 유효함
+	// 즉, circuit이 open되어도 다른 메서드에서 product-service에 요청을 보내는 것은 허용함
+	@CircuitBreaker(name = "productService", fallbackMethod = "fallbackProductService")
 	public Long orderFeignKafkaCreate(OrderCreateReqDto orderCreateReqDto, String userId) {
 
 		ProductDto productDto = productFeign.getProductById(orderCreateReqDto.productId(), userId);
@@ -98,5 +102,9 @@ public class OrderingService {
 			.build());
 
 		return ordering.getId();
+	}
+
+	public Long fallbackProductService(OrderCreateReqDto orderCreateReqDto, String userId, Throwable t) {
+		throw new RuntimeException("상품 서비스가 응답이 없습니다. 나중에 다시 시도해주세요.");
 	}
 }
