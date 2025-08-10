@@ -1,4 +1,16 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  # 스프링이 임의 포트 할당
+  port: 0
+
 spring:
+  application:
+    name: member-service
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3307/ordermsa?useSSL=false&allowPublicKeyRetrieval=true
