@@ -1,6 +1,5 @@
 package com.study.ordersystem.product.api.dto.request;
 
-import com.study.ordersystem.member.domain.Member;
 import com.study.ordersystem.product.domain.Product;
 
 public record ProductRegisterReqDto(
@@ -8,12 +7,12 @@ public record ProductRegisterReqDto(
 	int price,
 	int stockQuantity
 ) {
-	public Product toEntity(Member member) {
+	public Product toEntity(Long userId) {
 		return Product.builder()
 			.name(this.name)
 			.price(this.price)
 			.stockQuantity(this.stockQuantity)
-			.member(member)
+			.memberId(userId)
 			.build();
 	}
 }
