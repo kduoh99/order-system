@@ -24,3 +24,6 @@ spring:
         show_sql: true
         format_sql: true
     open-in-view: false
+
+  kafka:
+    kafka-server: localhost:9092
