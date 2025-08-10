@@ -25,6 +25,7 @@ public class OrderingService {
 
 	private final OrderingRepository orderingRepository;
 	private final RestTemplate restTemplate;
+	private final ProductFeign productFeign;
 
 	public Long orderCreate(OrderCreateReqDto orderCreateReqDto, String userId) {
 
@@ -54,6 +55,32 @@ public class OrderingService {
 				, httpHeaders
 			);
 			restTemplate.exchange(productPutUrl, HttpMethod.PUT, updateEntity, Void.class);
+		}
+
+		Ordering ordering = orderingRepository.save(Ordering.builder()
+			.memberId(Long.parseLong(userId))
+			.productId(orderCreateReqDto.productId())
+			.quantity(orderCreateReqDto.productCount())
+			.orderStatus(OrderStatus.ORDERED)
+			.build());
+
+		return ordering.getId();
+	}
+
+	public Long orderFeignKafkaCreate(OrderCreateReqDto orderCreateReqDto, String userId) {
+
+		ProductDto productDto = productFeign.getProductById(orderCreateReqDto.productId(), userId);
+
+		int quantity = orderCreateReqDto.productCount();
+		if (productDto.stockQuantity() < quantity) {
+			throw new IllegalArgumentException("재고가 부족합니다.");
+		} else {
+			productFeign.updateProductStock(
+				ProductUpdateStockDto.builder()
+					.productId(orderCreateReqDto.productId())
+					.productQuantity(orderCreateReqDto.productCount())
+					.build()
+			);
 		}
 
 		Ordering ordering = orderingRepository.save(Ordering.builder()
