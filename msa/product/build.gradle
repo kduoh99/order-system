@@ -41,6 +41,8 @@ dependencies {
 
 	// Config Server 사용을 위한 Client
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 }
 
 dependencyManagement {
